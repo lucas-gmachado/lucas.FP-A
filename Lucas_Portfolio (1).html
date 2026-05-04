@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Lucas Guimarães Machado — Business/Product Controller | FP&A. Mais de 7 anos em controladoria, planejamento financeiro e business partnering em multinacionais.">
+<title>Lucas G. Machado — Business Controller & FP&A</title>
+
+<!-- ============================================================
+     GOOGLE FONTS — Cormorant Garamond (display serif) + Manrope (body sans)
+     Pareamento editorial: serifa expressiva + sans geométrica refinada
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Font Awesome para ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============================================================
+   1. DESIGN TOKENS (CSS VARIABLES) — light theme default
+   Tema editorial: creme + tinta profunda + âmbar como acento
+   ============================================================ */
+:root {
+    /* Cores — modo claro (paleta sóbria: cinza-papel + azul-petróleo) */
+    --bg: #F4F4F2;
+    --bg-elevated: #FAFAF9;
+    --surface: #FFFFFF;
+    --ink: #1A1F2E;
+    --ink-soft: #2D3344;
+    --muted: #6B7280;
+    --line: #DCDCD6;
+    --line-soft: #E8E8E3;
+    --accent: #1E3A5F;
+    --accent-soft: #D6DEE9;
+    --accent-glow: rgba(30, 58, 95, 0.12);
+
+    /* Tipografia */
+    --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+    --font-body: 'Manrope', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    /* Métricas */
+    --max-width: 1200px;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+    --section-gap: clamp(5rem, 10vw, 9rem);
+
+    /* Animação — easing tipo Apple */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Modo escuro — paleta noturna fria com acento azul */
+[data-theme="dark"] {
+    --bg: #0E1117;
+    --bg-elevated: #161A23;
+    --surface: #1C2230;
+    --ink: #E8EAF0;
+    --ink-soft: #C4C8D2;
+    --muted: #8189A0;
+    --line: #2A2F3D;
+    --line-soft: #20242E;
+    --accent: #6FA8D6;
+    --accent-soft: #1F2D44;
+    --accent-glow: rgba(111, 168, 214, 0.18);
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+    overflow-x: hidden;
+    transition: background 0.5s var(--ease-in-out), color 0.5s var(--ease-in-out);
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+ul { list-style: none; }
+
+/* Tipografia base */
+h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+}
+h1 { font-size: clamp(2.4rem, 7vw, 5rem); }
+h2 { font-size: clamp(2rem, 5vw, 3.25rem); letter-spacing: -0.01em; }
+h3 { font-size: clamp(1.4rem, 3vw, 1.875rem); letter-spacing: -0.005em; }
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+}
+
+/* ============================================================
+   3. NAVIGATION — barra fixa com blur
+   ============================================================ */
+.nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 0;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, padding 0.3s;
+}
+.nav.scrolled {
+    padding: 0.85rem 0;
+    border-bottom-color: var(--line);
+}
+.nav__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nav__logo {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.35rem;
+    letter-spacing: 0.005em;
+    color: var(--ink);
+}
+.nav__menu {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+}
+.nav__link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    position: relative;
+    padding: 0.5rem 0;
+    transition: color 0.3s;
+}
+.nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out-expo);
+}
+.nav__link:hover { color: var(--ink); }
+.nav__link:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.nav__actions { display: flex; gap: 0.75rem; align-items: center; }
+
+.theme-toggle, .menu-toggle {
+    width: 38px; height: 38px;
+    border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    transition: all 0.3s var(--ease-out-expo);
+    background: transparent;
+}
+.theme-toggle:hover, .menu-toggle:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    transform: translateY(-1px);
+}
+.theme-toggle .moon { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .moon { display: block; }
+
+.menu-toggle { display: none; }
+
+/* ============================================================
+   4. HERO — primeira impressão, animação de carregamento
+   ============================================================ */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 9rem 0 5rem;
+    position: relative;
+}
+.hero__meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.hero__meta::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--accent);
+}
+.hero__title {
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+}
+.hero__role {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+    font-weight: 400;
+    max-width: 38ch;
+}
+.hero__role strong { font-weight: 600; color: var(--ink); }
+.hero__divider {
+    width: 80px;
+    height: 1px;
+    background: var(--ink);
+    margin: 2.5rem 0;
+}
+.hero__summary {
+    max-width: 56ch;
+    color: var(--ink-soft);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+}
+.hero__cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Botões */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: all 0.4s var(--ease-out-expo);
+    position: relative;
+    overflow: hidden;
+}
+.btn--primary {
+    background: var(--ink);
+    color: var(--bg);
+}
+.btn--primary:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--accent-glow);
+}
+.btn--ghost {
+    border: 1px solid var(--ink);
+    color: var(--ink);
+}
+.btn--ghost:hover {
+    background: var(--ink);
+    color: var(--bg);
+    transform: translateY(-2px);
+}
+.btn i { transition: transform 0.4s var(--ease-out-expo); }
+.btn:hover i.fa-arrow-down { transform: translateY(3px); }
+.btn:hover i.fa-arrow-right { transform: translateX(3px); }
+
+/* Stats sob o hero */
+.hero__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--line);
+}
+.stat__num {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+.stat__label {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+/* Animação inicial de entrada — escalonada */
+.hero__meta, .hero__title, .hero__role, .hero__divider, .hero__summary, .hero__cta, .hero__stats {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: heroReveal 1s var(--ease-out-expo) forwards;
+}
+.hero__meta { animation-delay: 0.1s; }
+.hero__title { animation-delay: 0.2s; }
+.hero__role { animation-delay: 0.35s; }
+.hero__divider { animation-delay: 0.45s; animation-duration: 1.2s; }
+.hero__summary { animation-delay: 0.55s; }
+.hero__cta { animation-delay: 0.7s; }
+.hero__stats { animation-delay: 0.85s; }
+
+@keyframes heroReveal {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   5. SECTION HEADERS — padrão consistente
+   ============================================================ */
+section {
+    padding: var(--section-gap) 0;
+    position: relative;
+}
+.section__head {
+    margin-bottom: 4rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2rem;
+}
+.section__num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+.section__title {
+    font-weight: 500;
+    color: var(--ink);
+}
+.section__subtitle {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    line-height: 1.6;
+}
+
+/* ============================================================
+   6. ABOUT / PROFILE
+   ============================================================ */
+.about__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    align-items: start;
+}
+.about__aside {
+    position: sticky;
+    top: 6rem;
+}
+.about__label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+.about__quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.5vw, 1.875rem);
+    line-height: 1.3;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink);
+}
+.about__quote em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+}
+.about__body p {
+    font-size: 1.0625rem;
+    color: var(--ink-soft);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+.about__pillars {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+.pillar i {
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+.pillar h4 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+}
+.pillar p {
+    font-size: 0.9375rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ============================================================
+   7. SKILLS — barras animadas + grupos
+   ============================================================ */
+.skills__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4rem 5rem;
+}
+.skill-group__title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--accent);
+}
+.skill {
+    margin-bottom: 1.5rem;
+}
+.skill__head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+}
+.skill__name { font-weight: 500; }
+.skill__level {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+.skill__track {
+    height: 4px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+}
+.skill__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform-origin: left;
+    transform: scaleX(0);
+    border-radius: 999px;
+    transition: transform 1.4s var(--ease-out-expo);
+}
+.skill.in-view .skill__fill { transform: scaleX(var(--lvl)); }
+.skill.accent .skill__fill { background: var(--accent); }
+
+/* ============================================================
+   8. EXPERIENCE — timeline vertical
+   ============================================================ */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--line);
+}
+.exp {
+    position: relative;
+    padding-bottom: 3.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.exp.in-view { opacity: 1; transform: translateY(0); }
+.exp:last-child { padding-bottom: 0; }
+.exp::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 6px;
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    transition: all 0.4s var(--ease-out-expo);
+}
+.exp.current::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 6px var(--accent-glow);
+}
+.exp__period {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+}
+.exp__current-tag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--accent);
+    color: var(--bg-elevated);
+    border-radius: 4px;
+    font-size: 0.625rem;
+    font-weight: 600;
+}
+.exp__title {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+}
+.exp__company {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+}
+.exp__bullets {
+    margin-top: 1rem;
+}
+.exp__bullets li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+}
+.exp__bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.7em;
+    width: 6px; height: 1px;
+    background: var(--accent);
+}
+
+/* ============================================================
+   9. PROJECTS — destaque para os 3 cases
+   Formato: Desafio / Ação / Resultado
+   ============================================================ */
+.projects__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+.project {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line-soft);
+    border-radius: 18px;
+    padding: clamp(2rem, 4vw, 3rem);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2.5rem;
+    transition: all 0.5s var(--ease-out-expo);
+    opacity: 0;
+    transform: translateY(24px);
+}
+.project.in-view { opacity: 1; transform: translateY(0); }
+.project:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 20px 60px -20px var(--accent-glow);
+}
+.project__num {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--accent);
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+}
+.project__tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+}
+.project__title {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.25;
+}
+.project__detail {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    padding: 0.875rem 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+.project__detail:first-of-type { border-top: none; }
+.project__detail-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    padding-top: 2px;
+}
+.project__detail-text { color: var(--ink-soft); }
+.project__detail-text strong { color: var(--ink); font-weight: 600; }
+
+/* ============================================================
+   10. EDUCATION — cards lado a lado
+   ============================================================ */
+.education__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+.edu-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.4s var(--ease-out-expo);
+    position: relative;
+    overflow: hidden;
+}
+.edu-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
+.edu-card__status {
+    position: absolute;
+    top: 1.25rem; right: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+}
+[data-theme="dark"] .edu-card__status { color: #E9C58F; }
+.edu-card__icon {
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    font-size: 1.5rem;
+}
+.edu-card__title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+}
+.edu-card__inst {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.25rem;
+}
+.edu-card__period {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+/* Certificações em formato de tags */
+.certs__head {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--ink);
+}
+.certs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+}
+.cert {
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    transition: all 0.3s var(--ease-out-expo);
+    background: var(--bg-elevated);
+}
+.cert:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+.cert i { margin-right: 0.4rem; opacity: 0.7; }
+
+/* ============================================================
+   11. CONTACT
+   ============================================================ */
+.contact {
+    background: var(--bg-elevated);
+    border-radius: 24px;
+    padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    margin: 0 var(--gutter);
+    border: 1px solid var(--line-soft);
+}
+.contact__label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+}
+.contact__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    max-width: 18ch;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--ink);
+}
+.contact__text {
+    font-size: 1.0625rem;
+    color: var(--ink-soft);
+    max-width: 48ch;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+}
+.contact__channels {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+.channel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: all 0.4s var(--ease-out-expo);
+}
+.channel:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--accent-glow);
+}
+.channel i { font-size: 1.05rem; }
+
+/* ============================================================
+   12. FOOTER
+   ============================================================ */
+.footer {
+    padding: 3rem 0 2rem;
+    border-top: 1px solid var(--line);
+    margin-top: 5rem;
+}
+.footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--muted);
+}
+.footer__sig {
+    font-family: var(--font-body);
+    color: var(--ink-soft);
+}
+
+/* ============================================================
+   13. SCROLL REVEAL — para sections genéricas
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal--delay-1 { transition-delay: 0.1s; }
+.reveal--delay-2 { transition-delay: 0.2s; }
+.reveal--delay-3 { transition-delay: 0.3s; }
+
+/* ============================================================
+   14. RESPONSIVO
+   ============================================================ */
+@media (max-width: 880px) {
+    .nav__menu { display: none; }
+    .menu-toggle { display: flex; }
+
+    .nav__menu.open {
+        display: flex;
+        position: fixed;
+        top: 70px; left: 0; right: 0;
+        flex-direction: column;
+        background: var(--bg);
+        padding: 2rem var(--gutter);
+        border-bottom: 1px solid var(--line);
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .about__grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .about__aside { position: static; }
+    .about__pillars { grid-template-columns: 1fr; }
+
+    .skills__grid { grid-template-columns: 1fr; gap: 3rem; }
+
+    .project { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 1.5rem; }
+    .project__num { font-size: 2.25rem; }
+    .project__detail { grid-template-columns: 1fr; gap: 0.4rem; padding: 0.75rem 0; }
+
+    .hero { padding: 7rem 0 3rem; min-height: auto; }
+    .hero__stats { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .stat__num { font-size: 2.25rem; }
+
+    .section__head { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+    .hero__cta { flex-direction: column; align-items: stretch; }
+    .btn { justify-content: center; }
+    .channel { padding: 0.75rem 1.1rem; font-size: 0.875rem; }
+}
+
+/* Reduz movimento para usuários sensíveis */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav class="nav" id="nav">
+    <div class="nav__inner">
+        <a href="#hero" class="nav__logo">Lucas Guimarães Machado</a>
+        <ul class="nav__menu" id="menu">
+            <li><a href="#about" class="nav__link">Sobre</a></li>
+            <li><a href="#skills" class="nav__link">Skills</a></li>
+            <li><a href="#experience" class="nav__link">Experiência</a></li>
+            <li><a href="#projects" class="nav__link">Projetos</a></li>
+            <li><a href="#education" class="nav__link">Formação</a></li>
+            <li><a href="#contact" class="nav__link">Contato</a></li>
+        </ul>
+        <div class="nav__actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+                <i class="fa-regular fa-sun sun"></i>
+                <i class="fa-regular fa-moon moon"></i>
+            </button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero" id="hero">
+    <div class="container">
+        <div class="hero__meta">Curitiba, PR &nbsp;·&nbsp; Disponível para novas oportunidades</div>
+        <h1 class="hero__title">Lucas Guimarães Machado</h1>
+        <p class="hero__role">
+            <strong>Business / Product Controller</strong> &nbsp;·&nbsp; FP&amp;A &nbsp;·&nbsp; Controladoria&nbsp;Estratégica
+        </p>
+        <div class="hero__divider"></div>
+        <p class="hero__summary">
+            Mais de 7 anos transformando dados financeiros em decisões de negócio dentro de multinacionais industriais.
+            Atuo como parceiro estratégico de áreas produtivas, conduzindo o ciclo completo de planejamento, análise de
+            performance e business partnering em estruturas matriciais globais.
+        </p>
+        <div class="hero__cta">
+            <a href="Curriculo_Lucas.pdf" download class="btn btn--primary">
+                <i class="fa-solid fa-arrow-down"></i> Baixar currículo (PDF)
+            </a>
+            <a href="#contact" class="btn btn--ghost">
+                Entrar em contato <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="hero__stats">
+            <div class="stat">
+                <div class="stat__num">7+</div>
+                <div class="stat__label">Anos em Controladoria,<br>FP&amp;A e Planejamento Financeiro</div>
+            </div>
+            <div class="stat">
+                <div class="stat__num">−20h</div>
+                <div class="stat__label">Reduzidas em fechamentos<br>mensais com automação</div>
+            </div>
+            <div class="stat">
+                <div class="stat__num">5+</div>
+                <div class="stat__label">Projetos com análise<br>de viabilidade econômica</div>
+            </div>
+            <div class="stat">
+                <div class="stat__num">20+</div>
+                <div class="stat__label">Centros de custo controlados<br>em área produtiva</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ============================================================
+     ABOUT
+     ============================================================ -->
+<section id="about">
+    <div class="container">
+        <div class="section__head reveal">
+            <div>
+                <div class="section__num">01 / Sobre</div>
+                <h2 class="section__title">Perfil profissional</h2>
+            </div>
+            <p class="section__subtitle">
+                Especialista em conectar números, estratégia e decisão para gerar impacto real no negócio.
+            </p>
+        </div>
+
+        <div class="about__grid">
+            <aside class="about__aside reveal">
+                <div class="about__label">Princípio</div>
+                <p class="about__quote">
+                    "Não basta reportar o número. O papel do Controller é traduzir o dado em decisão e a decisão em resultado."
+                </p>
+            </aside>
+
+            <div class="about__body reveal reveal--delay-1">
+                <p>
+                    Sou <strong>Analista de Controladoria</strong> com mais de 7 anos de experiência em FP&amp;A,
+                    business control e planejamento financeiro em multinacionais de grande porte como
+                    <strong>Robert Bosch</strong>, <strong>Votorantim</strong> e <strong>EY</strong>.
+                </p>
+                <p>
+                    Atuo como <strong>parceiro estratégico (business partner)</strong> de áreas produtivas em
+                    ambientes matriciais complexos, com histórico comprovado de entrega de análises financeiras
+                    que suportam decisões da alta gestão e diretoria global.
+                </p>
+                <p>
+                    Tenho experiência sólida em <strong>ciclo completo de planejamento</strong> (Budget, Forecast/BAB
+                    e fechamentos mensais), análise de variâncias e desenvolvimento de ferramentas de automação e
+                    visualização de dados — sempre com foco em melhoria contínua e impacto real nos resultados.
+                </p>
+
+                <div class="about__pillars">
+                    <div class="pillar">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <h4>Pensamento estratégico</h4>
+                        <p>Visão integrada do negócio, do número operacional ao resultado consolidado.</p>
+                    </div>
+                    <div class="pillar">
+                        <i class="fa-solid fa-handshake"></i>
+                        <h4>Business partnering</h4>
+                        <p>Relacionamento próximo com lideranças de áreas produtivas e administrativas.</p>
+                    </div>
+                    <div class="pillar">
+                        <i class="fa-solid fa-gears"></i>
+                        <h4>Automação</h4>
+                        <p>Eliminação de retrabalho via Power Query, VBA e Power Automate.</p>
+                    </div>
+                    <div class="pillar">
+                        <i class="fa-solid fa-globe"></i>
+                        <h4>Atuação global</h4>
+                        <p>Reporte e apresentação para a central na Alemanha em fórum multi-país.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SKILLS — barras animadas no scroll
+     ============================================================ -->
+<section id="skills">
+    <div class="container">
+        <div class="section__head reveal">
+            <div>
+                <div class="section__num">02 / Skills</div>
+                <h2 class="section__title">Competências técnicas</h2>
+            </div>
+            <p class="section__subtitle">
+                Stack consolidada em FP&amp;A, controladoria e ferramentas de análise financeira e BI.
+            </p>
+        </div>
+
+        <div class="skills__grid">
+            <!-- FP&A / Controlling -->
+            <div class="skill-group reveal">
+                <h3 class="skill-group__title">FP&amp;A / Controlling</h3>
+                <div class="skill accent" style="--lvl: 0.95"><div class="skill__head"><span class="skill__name">Budget &amp; Forecast (BAB)</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.93"><div class="skill__head"><span class="skill__name">Variance Analysis</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.88"><div class="skill__head"><span class="skill__name">Análise de Rentabilidade &amp; Viabilidade Econômica</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.85"><div class="skill__head"><span class="skill__name">ROI / IRR / Payback</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.83"><div class="skill__head"><span class="skill__name">CAPEX &amp; OPEX</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+            </div>
+
+            <!-- Ferramentas -->
+            <div class="skill-group reveal reveal--delay-1">
+                <h3 class="skill-group__title">Ferramentas</h3>
+                <div class="skill" style="--lvl: 0.97"><div class="skill__head"><span class="skill__name">Excel Avançado &amp; VBA</span><span class="skill__level">Expert</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.92"><div class="skill__head"><span class="skill__name">Power BI</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.88"><div class="skill__head"><span class="skill__name">Power Query</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.78"><div class="skill__head"><span class="skill__name">Power Automate</span><span class="skill__level">Intermediário</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.75"><div class="skill__head"><span class="skill__name">SAP R/3</span><span class="skill__level">Intermediário</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.72"><div class="skill__head"><span class="skill__name">Tableau</span><span class="skill__level">Intermediário</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+            </div>
+
+            <!-- Soft skills -->
+            <div class="skill-group reveal">
+                <h3 class="skill-group__title">Soft skills</h3>
+                <div class="skill accent" style="--lvl: 0.93"><div class="skill__head"><span class="skill__name">Storytelling com dados</span><span class="skill__level">Forte</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.92"><div class="skill__head"><span class="skill__name">Comunicação executiva</span><span class="skill__level">Forte</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.90"><div class="skill__head"><span class="skill__name">Pensamento estratégico</span><span class="skill__level">Forte</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.88"><div class="skill__head"><span class="skill__name">Business partnering</span><span class="skill__level">Forte</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill accent" style="--lvl: 0.88"><div class="skill__head"><span class="skill__name">Melhoria contínua &amp; automação</span><span class="skill__level">Forte</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+            </div>
+
+            <!-- Idiomas -->
+            <div class="skill-group reveal reveal--delay-1">
+                <h3 class="skill-group__title">Idiomas</h3>
+                <div class="skill" style="--lvl: 1.0"><div class="skill__head"><span class="skill__name">Português</span><span class="skill__level">Nativo</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.85"><div class="skill__head"><span class="skill__name">Inglês</span><span class="skill__level">Avançado</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+                <div class="skill" style="--lvl: 0.30"><div class="skill__head"><span class="skill__name">Alemão</span><span class="skill__level">Básico</span></div><div class="skill__track"><div class="skill__fill"></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     EXPERIENCE — timeline
+     ============================================================ -->
+<section id="experience">
+    <div class="container">
+        <div class="section__head reveal">
+            <div>
+                <div class="section__num">03 / Trajetória</div>
+                <h2 class="section__title">Histórico profissional</h2>
+            </div>
+            <p class="section__subtitle">
+                Mais de 7 anos em controladoria, FP&amp;A e tributário em multinacionais e Big Four.
+            </p>
+        </div>
+
+        <div class="timeline">
+            <article class="exp current">
+                <div class="exp__period">11/2022 — Atual <span class="exp__current-tag">Atual</span></div>
+                <h3 class="exp__title">Analista de Controladoria</h3>
+                <div class="exp__company">Robert Bosch Ltda. · Curitiba</div>
+                <ul class="exp__bullets">
+                    <li>Responsável pelo ciclo completo de planejamento financeiro de área produtiva: Budget anual, Forecasts mensais (BAB), desdobramentos de targets e revisões estratégicas, com reporte à alta gestão e diretoria da planta.</li>
+                    <li>Business partner da área produtiva mais representativa da planta, controlando budget superior a R$ 100 milhões/ano distribuído em mais de 20 centros de custo — apontamento de desvios, planejamento de prognose e cálculos de ROI para novas aquisições.</li>
+                    <li>Apresentação mensal de resultados do BAB para alta gestão e diretoria local, e reuniões bimestrais com a central alemã representando a planta de Curitiba em fórum global com plantas da Europa, América Latina e demais regiões — com apresentação das variações do produto como um todo (MAT e VA).</li>
+                    <li>Análise de viabilidade econômica para realocação de volume produtivo de planta europeia em risco de insolvência de fornecedor — projeto aprovado e gerou ganho de ocupação para a planta de Curitiba.</li>
+                    <li>Desenvolvimento de ferramenta em Power Query para cálculo de minutos de produção por centro de custo, substituindo metodologia inadequada de rateio (VA-Var) e reduzindo em mais de 20 horas o processo de report mensal.</li>
+                    <li>Acompanhamento de KPIs operacionais e financeiros com apresentação executiva via Power BI para suporte à tomada de decisão da alta gestão.</li>
+                </ul>
+            </article>
+
+            <article class="exp">
+                <div class="exp__period">04/2022 — 11/2022</div>
+                <h3 class="exp__title">Assistente de Controladoria</h3>
+                <div class="exp__company">Bosch Rexroth · Pomerode</div>
+                <ul class="exp__bullets">
+                    <li>Acompanhamento e reporte de KPIs de controladoria de compras.</li>
+                    <li>Business partner de departamentos indiretos à produção — planejamento e controle de variações de preços de matérias-primas.</li>
+                    <li>Desenvolvimento de ferramentas de análise e visualização no Power BI.</li>
+                </ul>
+            </article>
+
+            <article class="exp">
+                <div class="exp__period">04/2021 — 04/2022</div>
+                <h3 class="exp__title">Analista de Controladoria Jurídica</h3>
+                <div class="exp__company">Votorantim · Curitiba</div>
+                <ul class="exp__bullets">
+                    <li>Gestão de exposição fiscal e conformidade tributária do Grupo Votorantim em nível federal, estadual e municipal, com monitoramento de riscos e tratativas de passivos.</li>
+                    <li>Resolução de pendências fiscais (obrigação principal e acessória), monitoramento de DTE, Cadin Federal e Estadual, e atendimento a procedimentos fiscalizatórios.</li>
+                </ul>
+            </article>
+
+            <article class="exp">
+                <div class="exp__period">09/2020 — 04/2021</div>
+                <h3 class="exp__title">Assistente Fiscal</h3>
+                <div class="exp__company">GP Imports · Curitiba</div>
+                <ul class="exp__bullets">
+                    <li>Apuração de impostos federais, estaduais e municipais, registro de documentos fiscais e suporte na conferência de relatórios contábeis.</li>
+                </ul>
+            </article>
+
+            <article class="exp">
+                <div class="exp__period">01/2020 — 08/2020</div>
+                <h3 class="exp__title">Tax Trainee — Global Compliance and Reporting</h3>
+                <div class="exp__company">Ernst &amp; Young (EY) · Curitiba</div>
+                <ul class="exp__bullets">
+                    <li>Auditoria e revisão da base de cálculo de IRPJ e CSLL (lucro real e presumido), revisão de IRPJ/CSLL diferidos, deduções fiscais e obrigações acessórias (ECD, ECF, DCTF).</li>
+                </ul>
+            </article>
+
+            <article class="exp">
+                <div class="exp__period">08/2018 — 12/2019</div>
+                <h3 class="exp__title">Estágio em Controladoria</h3>
+                <div class="exp__company">Robert Bosch Ltda. · Curitiba</div>
+                <ul class="exp__bullets">
+                    <li>Suporte em Business Plan, Forecasts e fechamentos mensais; elaboração de indicadores via Tableau e Power BI.</li>
+                    <li>Análise de faturamento, cálculo de custo de novos produtos e suporte ao planejamento econômico.</li>
+                    <li>Implementação de macros VBA para redução de tempo e aumento de confiabilidade nos processos de controladoria.</li>
+                </ul>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     PROJECTS — 3 cases destacados
+     Formato: Desafio / Ação / Resultado
+     ============================================================ -->
+<section id="projects">
+    <div class="container">
+        <div class="section__head reveal">
+            <div>
+                <div class="section__num">04 / Cases</div>
+                <h2 class="section__title">Projetos em destaque</h2>
+            </div>
+            <p class="section__subtitle">
+                Três entregas que ilustram visão estratégica, execução técnica e impacto direto no resultado.
+            </p>
+        </div>
+
+        <div class="projects__grid">
+
+            <!-- Case 01 -->
+            <article class="project reveal">
+                <div class="project__num">01</div>
+                <div class="project__body">
+                    <div class="project__tag">Análise de Viabilidade · CAPEX · Cross-Plant</div>
+                    <h3 class="project__title">Realocação de volume produtivo da planta de Homburg para Curitiba</h3>
+
+                    <div class="project__detail">
+                        <div class="project__detail-label">Desafio</div>
+                        <div class="project__detail-text">
+                            Identifiquei, em análise de volume entre plantas globais, que <strong>um part-number já produzido em Curitiba</strong> também era fabricado em Homburg (Alemanha). Naquele momento, a planta europeia enfrentava <strong>risco de insolvência do fornecedor</strong> de matéria-prima — uma ameaça concreta à continuidade do produto.
+                        </div>
+                    </div>
+                    <div class="project__detail">
+                        <div class="project__detail-label">Ação</div>
+                        <div class="project__detail-text">
+                            Conduzi todo o <strong>processo de cálculo de viabilidade econômica</strong> da realocação do volume para Curitiba — incluindo análise de capacidade produtiva, custos diretos e indiretos, impactos em CAPEX/OPEX e retorno do investimento. Apresentei o business case para aprovação corporativa.
+                        </div>
+                    </div>
+                    <div class="project__detail">
+                        <div class="project__detail-label">Resultado</div>
+                        <div class="project__detail-text">
+                            <strong>Projeto aprovado.</strong> A planta de Curitiba absorveu o volume adicional, garantiu continuidade do part-number a nível global e ganhou maior ocupação fabril — reforçando sua relevância estratégica dentro da rede industrial da empresa.
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Case 02 -->
+            <article class="project reveal">
+                <div class="project__num">02</div>
+                <div class="project__body">
+                    <div class="project__tag">Automação · Power Query · Melhoria Contínua</div>
+                    <h3 class="project__title">Ferramenta de apuração de minutos de produção em Power Query</h3>
+
+                    <div class="project__detail">
+                        <div class="project__detail-label">Desafio</div>
+                        <div class="project__detail-text">
+                            O modelo histórico de ponderação do custo variável dos BABs utilizava a <strong>variação do VA-Var por item</strong> como proxy de volume. A metodologia gerava <strong>inconsistências recorrentes nos números</strong>, alinhamentos retrabalhados e perda de credibilidade do report mensal junto à liderança.
+                        </div>
+                    </div>
+                    <div class="project__detail">
+                        <div class="project__detail-label">Ação</div>
+                        <div class="project__detail-text">
+                            Desenvolvi, do zero, uma <strong>ferramenta em Power Query</strong> que apura o volume de minutos de produção por centro de custo a partir das fontes operacionais — substituindo a lógica anterior por um critério muito mais aderente à realidade da planta.
+                        </div>
+                    </div>
+                    <div class="project__detail">
+                        <div class="project__detail-label">Resultado</div>
+                        <div class="project__detail-text">
+                            Redução de <strong>mais de 20 horas mensais</strong> no processo de report de volumes, eliminação de retrabalhos e alinhamentos adicionais, e <strong>maior fidedignidade</strong> da variação de produção apresentada à diretoria.
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Case 03 -->
+            <article class="project reveal">
+                <div class="project__num">03</div>
+                <div class="project__body">
+                    <div class="project__tag">Business Partnering · Budget R$ 100M+ · Cross-Functional</div>
+                    <h3 class="project__title">Business partnering da área produtiva mais representativa da planta</h3>
+
+                    <div class="project__detail">
+                        <div class="project__detail-label">Contexto</div>
+                        <div class="project__detail-text">
+                            Atuo como <strong>parceiro estratégico de negócio</strong> da área produtiva de maior peso financeiro da planta, controlando um budget anual <strong>superior a R$ 100 milhões</strong>, distribuído em <strong>mais de 20 centros de custo</strong>.
+                        </div>
+                    </div>
+                    <div class="project__detail">
+                        <div class="project__detail-label">Atuação</div>
+                        <div class="project__detail-text">
+                            Conduzo o <strong>apontamento e tratamento de desvios mês a mês</strong>, planejamento da prognose, e <strong>cálculos de retorno de investimento</strong> (ROI / Payback) para novas aquisições e projetos de CAPEX da área. Sou responsável pela apresentação executiva dos resultados do BAB tanto para a diretoria local quanto para a central alemã, em fórum global multi-país, expondo as variações de MAT e VA do produto.
+                        </div>
+                    </div>
+                    <div class="project__detail">
+                        <div class="project__detail-label">Impacto</div>
+                        <div class="project__detail-text">
+                            <strong>Suporte direto à tomada de decisão</strong> da liderança operacional e financeira, com leituras claras de performance, antecipação de riscos e qualificação dos investimentos da área.
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     EDUCATION
+     ============================================================ -->
+<section id="education">
+    <div class="container">
+        <div class="section__head reveal">
+            <div>
+                <div class="section__num">05 / Formação</div>
+                <h2 class="section__title">Formação acadêmica</h2>
+            </div>
+            <p class="section__subtitle">
+                Investimento contínuo em desenvolvimento técnico e estratégico.
+            </p>
+        </div>
+
+        <div class="education__grid">
+            <article class="edu-card reveal">
+                <span class="edu-card__status">Em andamento</span>
+                <i class="fa-solid fa-graduation-cap edu-card__icon"></i>
+                <h3 class="edu-card__title">MBA em Gestão Estratégica de Custos: Excelência em Análise Financeira e Tomada de Decisão</h3>
+                <div class="edu-card__inst">PUC-PR</div>
+                <div class="edu-card__period">Iniciado em 2026</div>
+            </article>
+
+            <article class="edu-card reveal reveal--delay-1">
+                <span class="edu-card__status">Concluído</span>
+                <i class="fa-solid fa-university edu-card__icon"></i>
+                <h3 class="edu-card__title">Bacharelado em Ciências Contábeis</h3>
+                <div class="edu-card__inst">Universidade Federal do Paraná (UFPR)</div>
+                <div class="edu-card__period">Concluído em 2023</div>
+            </article>
+        </div>
+
+        <div class="reveal">
+            <div class="certs__head">Cursos &amp; Certificações</div>
+            <div class="certs">
+                <span class="cert"><i class="fa-solid fa-chart-pie"></i>Power BI Avançado · Hashtag (2022)</span>
+                <span class="cert"><i class="fa-solid fa-table"></i>Excel Avançado &amp; VBA · Sigma (2018)</span>
+                <span class="cert"><i class="fa-solid fa-language"></i>Inglês · CNA (2025)</span>
+                <span class="cert"><i class="fa-solid fa-chart-column"></i>Tableau · Kie-Tec (2018)</span>
+                <span class="cert"><i class="fa-solid fa-file-invoice-dollar"></i>IRPF · UFPR (2018)</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CONTACT
+     ============================================================ -->
+<section id="contact">
+    <div class="contact reveal">
+        <div class="contact__label">06 / Contato</div>
+        <h2 class="contact__title">Vamos conversar?</h2>
+        <p class="contact__text">
+            Aberto a oportunidades de Business Controller, FP&amp;A Sênior e posições de controladoria estratégica.
+            Fique à vontade para entrar em contato pelo canal de sua preferência.
+        </p>
+        <div class="contact__channels">
+            <a href="mailto:lucas.gmachado98@gmail.com" class="channel">
+                <i class="fa-regular fa-envelope"></i> lucas.gmachado98@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/lucasgmachado/" target="_blank" rel="noopener" class="channel">
+                <i class="fa-brands fa-linkedin-in"></i> linkedin.com/in/lucasgmachado
+            </a>
+            <a href="tel:+5541987286318" class="channel">
+                <i class="fa-solid fa-phone"></i> (41) 98728-6318
+            </a>
+            <a href="Curriculo_Lucas.pdf" download class="channel">
+                <i class="fa-solid fa-file-arrow-down"></i> Baixar PDF
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer__inner">
+            <div>© 2026 Lucas G. Machado · Todos os direitos reservados</div>
+            <div class="footer__sig">Curitiba, PR · Brasil</div>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* ============================================================
+   1. THEME TOGGLE — alternância claro/escuro (memória só de sessão)
+   Os artifacts não suportam localStorage, então o tema só persiste
+   durante a sessão atual.
+   ============================================================ */
+(function initTheme() {
+    const btn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+
+    // Detecta preferência do sistema na primeira carga
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+
+    btn.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme');
+        root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    });
+})();
+
+/* ============================================================
+   2. NAV — adiciona classe .scrolled quando rola e mostra o menu mobile
+   ============================================================ */
+(function initNav() {
+    const nav = document.getElementById('nav');
+    const menuBtn = document.getElementById('menuToggle');
+    const menu = document.getElementById('menu');
+
+    // Sombra/borda na barra ao rolar
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Menu mobile
+    menuBtn.addEventListener('click', () => {
+        menu.classList.toggle('open');
+        const icon = menuBtn.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+    });
+
+    // Fecha menu ao clicar em link
+    menu.querySelectorAll('.nav__link').forEach(link => {
+        link.addEventListener('click', () => {
+            menu.classList.remove('open');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.add('fa-bars');
+            icon.classList.remove('fa-xmark');
+        });
+    });
+})();
+
+/* ============================================================
+   3. SCROLL REVEAL — IntersectionObserver para animar seções
+   Cada elemento .reveal, .skill, .exp, .project recebe a classe
+   .in-view quando entra no viewport, disparando animações CSS.
+   ============================================================ */
+(function initScrollReveal() {
+    const targets = document.querySelectorAll('.reveal, .skill, .exp, .project');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                // Para .skill, animação é one-shot (não desobserva
+                // imediatamente para que filhos com delay também animem)
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px'
+    });
+
+    targets.forEach(el => observer.observe(el));
+})();
+
+/* ============================================================
+   4. SMOOTH SCROLL com offset para a nav fixa
+   ============================================================ */
+(function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const id = this.getAttribute('href');
+            if (id === '#') return;
+            const target = document.querySelector(id);
+            if (!target) return;
+            e.preventDefault();
+            const navHeight = document.getElementById('nav').offsetHeight;
+            const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 20;
+            window.scrollTo({ top, behavior: 'smooth' });
+        });
+    });
+})();
+
+/* ============================================================
+   5. PARALLAX SUTIL no hero — efeito de profundidade no scroll
+   Movimento mínimo, apenas para dar sensação de camadas.
+   ============================================================ */
+(function initParallax() {
+    const heroTitle = document.querySelector('.hero__title');
+    if (!heroTitle) return;
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const y = window.scrollY;
+                if (y < 600) {
+                    heroTitle.style.transform = `translateY(${y * 0.08}px)`;
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+})();
+
+/* ============================================================
+   6. ACTIVE LINK — destaca link da seção visível na nav
+   ============================================================ */
+(function initActiveLink() {
+    const sections = document.querySelectorAll('section[id], header[id]');
+    const links = document.querySelectorAll('.nav__link');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                links.forEach(link => {
+                    const isActive = link.getAttribute('href') === '#' + id;
+                    link.style.color = isActive ? 'var(--accent)' : '';
+                });
+            }
+        });
+    }, { rootMargin: '-40% 0px -40% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+})();
+</script>
+
+</body>
+</html>
